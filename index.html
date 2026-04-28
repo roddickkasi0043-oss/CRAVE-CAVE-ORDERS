@@ -62,20 +62,41 @@
             const item = menu.find(i => i.id === id);
             cart.push(item);
             updateCart();
+         function removeFromCart(index) {
+    // Remove 1 item at the specific index
+    cart.splice(index, 1);
+    updateCart();
+}   
         }
 
-        function updateCart() {
-            const cartDiv = document.getElementById('cart-items');
-            const totalSpan = document.getElementById('total');
-            if (cart.length === 0) {
-                cartDiv.innerHTML = "Empty Cart";
-                totalSpan.innerText = "0.00";
-                return;
-            }
+      function updateCart() {
+    const cartDiv = document.getElementById('cart-items');
+    const totalSpan = document.getElementById('total');
+    
+    if (cart.length === 0) {
+        cartDiv.innerHTML = "Empty Cart";
+        totalSpan.innerText = "0.00";
+        return;
+    }
+
+    // This creates a list with +/- buttons for each item
+    cartDiv.innerHTML = cart.map((item, index) => `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; background: white; padding: 5px; border-radius: 5px;">
+            <span>${item.name}</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <button onclick="removeFromCart(${index})" style="background: #dc3545; padding: 2px 8px;">-</button>
+                <button onclick="addToCart(${item.id})" style="background: #28a745; padding: 2px 8px;">+</button>
+            </div>
+        </div>
+    `).join('');
+
+    const total = cart.reduce((sum, item) => sum + item.price, 0);
+    totalSpan.innerText = total.toFixed(2);
+}
             cartDiv.innerHTML = cart.map(i => `<div>• ${i.name}</div>`).join('');
             const total = cart.reduce((sum, item) => sum + item.price, 0);
             totalSpan.innerText = total.toFixed(2);
-        }
+        
 
         async function submitOrder() {
             if (cart.length === 0) return alert("Add food first!");
