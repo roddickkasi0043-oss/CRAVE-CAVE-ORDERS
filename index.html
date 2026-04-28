@@ -92,22 +92,50 @@
         }
 
         async function submitOrder() {
-            if (cart.length === 0) return alert("Please select items!");
-            const name = prompt("Enter your Name:");
-            const loc = prompt("Delivery (Hostel/Block):");
-            if (!name || !loc) return alert("Required!");
+    if (cart.length === 0) return alert("Please select items!");
+    
+    const name = prompt("Enter your Name:");
+    const loc = prompt("Delivery (Hostel/Block):");
+    if (!name || !loc) return alert("Required!");
 
-            const myUrl = 'https://congenial-space-umbrella-7795769xq9vrcvp4-3000.app.github.dev';
+    const myUrl = 'https://congenial-space-umbrella-7795769xq9vrcvp4-3000.app.github.dev';
+    const totalAmount = document.getElementById('total').innerText;
 
-            try {
-                const res = await fetch(`${myUrl}/order`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ customer: name, location: loc, items: cart, total: document.getElementById('total').innerText })
-                });
-                if (res.ok) showPaymentScreen(name, document.getElementById('total').innerText);
-            } catch (err) { alert("Server Down! Run node server.js and set Port to Public."); }
+    // 1. Create the WhatsApp Message
+    const orderList = cart.map(i => `- ${i.name}`).join('%0A'); // %0A is a "New Line"
+    const whatsappMessage = `*NEW ORDER FROM CRAVE CAVE*%0A%0A` +
+                            `*Customer:* ${name}%0A` +
+                            `*Location:* ${loc}%0A` +
+                            `*Items:*%0A${orderList}%0A%0A` +
+                            `*Total:* RM ${totalAmount}%0A%0A` +
+                            `Please confirm my order!`;
+
+    const whatsappNumber = "60123050749"; // Change this to your number
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+
+    try {
+        // 2. Save to your database first (for your records)
+        const res = await fetch(`${myUrl}/order`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                customer: name, 
+                location: loc, 
+                items: cart, 
+                total: totalAmount 
+            })
+        });
+
+        if (res.ok) {
+            // 3. Open WhatsApp and show payment screen
+            window.open(whatsappUrl, '_blank'); // Opens WhatsApp in a new tab
+            showPaymentScreen(name, totalAmount);
         }
+    } catch (err) { 
+        alert("Server Down! But you can still order via WhatsApp.");
+        window.open(whatsappUrl, '_blank'); // Backup if server is dead
+    }
+}
 
         function showPaymentScreen(name, total) {
             document.getElementById('main-content').innerHTML = `
