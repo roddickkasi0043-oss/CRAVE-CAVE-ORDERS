@@ -5,31 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crave Cave - UMSKAL</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; padding: 20px; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f9; padding: 15px; margin: 0; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         h1 { color: #007bff; text-align: center; margin-bottom: 5px; }
         .menu-item { border-bottom: 1px solid #eee; padding: 12px 0; display: flex; justify-content: space-between; align-items: center; }
-        .cart-section { margin-top: 30px; padding: 20px; background: #e7f3ff; border-radius: 10px; border: 1px solid #b3e5fc; }
-        button { background-color: #007bff; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        button:hover { background-color: #0056b3; }
-        .qr-screen { text-align: center; padding: 20px; }
-        .qr-img { width: 250px; border: 4px solid #007bff; border-radius: 10px; margin: 20px 0; }
+        .cart-section { margin-top: 25px; padding: 15px; background: #eef6ff; border-radius: 12px; border: 1px solid #d0e3ff; }
+        .cart-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; background: white; padding: 8px; border-radius: 8px; }
+        .btn-add { background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
+        .btn-qty { border: none; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; }
+        .qr-screen { text-align: center; padding: 10px; }
+        .qr-img { width: 220px; border: 5px solid #007bff; border-radius: 15px; margin: 15px 0; }
     </style>
 </head>
 <body>
 
     <div class="container" id="main-content">
-        <h1>Crave Cave Menu</h1>
-        <p style="text-align: center; color: #666;">Authentic Flavors delivered to UMSKAL!</p>
+        <h1>Crave Cave</h1>
+        <p style="text-align: center; color: #555;">Official Digital Menu for UMSKAL</p>
 
         <div id="menu-container"></div>
 
         <div class="cart-section">
-            <h2>Your Order</h2>
+            <h3 style="margin-top:0;">Your Order</h3>
             <div id="cart-items">Empty Cart</div>
-            <hr>
-            <h3>Total: RM <span id="total">0.00</span></h3>
-            <button onclick="submitOrder()" style="width: 100%; padding: 15px; font-size: 1.1em;">Place Order & Pay Now</button>
+            <hr style="border: 0.5px solid #d0e3ff;">
+            <h3 style="display: flex; justify-content: space-between;">Total: <span>RM <span id="total">0.00</span></span></h3>
+            <button onclick="submitOrder()" style="width: 100%; padding: 15px; background: #007bff; color: white; border: none; border-radius: 10px; font-size: 1.1em; font-weight: bold; cursor: pointer;">Place Order & Pay</button>
         </div>
     </div>
 
@@ -37,74 +38,65 @@
         const menu = [
             { id: 1, name: "Soto Ayam", price: 9.00 }, { id: 2, name: "Soto Daging", price: 9.00 },
             { id: 3, name: "Soto Urat", price: 10.00 }, { id: 4, name: "Soto Perut", price: 10.00 },
-            { id: 5, name: "Soto Urat + Perut", price: 12.00 }, { id: 6, name: "Soto Ayam + Daging", price: 10.00 },
-            { id: 7, name: "Soto Ayam + Urat", price: 11.00 }, { id: 8, name: "Soto Ayam + Perut", price: 11.00 },
-            { id: 13, name: "Mee Goreng Ayam", price: 9.00 }, { id: 14, name: "Mee Goreng Daging", price: 9.00 },
-            { id: 19, name: "Nasi Goreng Ayam", price: 9.00 }, { id: 22, name: "Nasi Goreng Pattaya", price: 10.50 },
-            { id: 23, name: "Nasi Goreng Kampung", price: 8.00 }, { id: 30, name: "Nasi Ayam Penyet", price: 11.00 },
-            { id: 31, name: "Add On: Telur Mata", price: 1.50 }
+            { id: 5, name: "Soto Urat + Perut", price: 12.00 }, { id: 13, name: "Mee Goreng Ayam", price: 9.00 },
+            { id: 14, name: "Mee Goreng Daging", price: 9.00 }, { id: 19, name: "Nasi Goreng Ayam", price: 9.00 },
+            { id: 22, name: "Nasi Goreng Pattaya", price: 10.50 }, { id: 23, name: "Nasi Goreng Kampung", price: 8.00 },
+            { id: 30, name: "Nasi Ayam Penyet", price: 11.00 }, { id: 31, name: "Add On: Telur Mata", price: 1.50 }
         ];
 
         let cart = [];
 
         function renderMenu() {
             const menuDiv = document.getElementById('menu-container');
-            if(!menuDiv) return;
+            if (!menuDiv) return;
             menuDiv.innerHTML = menu.map(item => `
                 <div class="menu-item">
-                    <span><strong>${item.name}</strong><br><small>RM ${item.price.toFixed(2)}</small></span>
-                    <button onclick="addToCart(${item.id})">Add</button>
+                    <span><strong>${item.name}</strong><br><small style="color:#888;">RM ${item.price.toFixed(2)}</small></span>
+                    <button class="btn-add" onclick="addToCart(${item.id})">Add</button>
                 </div>
             `).join('');
         }
 
         function addToCart(id) {
             const item = menu.find(i => i.id === id);
-            cart.push(item);
+            cart.push({...item, cartId: Date.now() + Math.random()});
             updateCart();
-         function removeFromCart(index) {
-    // Remove 1 item at the specific index
-    cart.splice(index, 1);
-    updateCart();
-}   
         }
 
-      function updateCart() {
-    const cartDiv = document.getElementById('cart-items');
-    const totalSpan = document.getElementById('total');
-    
-    if (cart.length === 0) {
-        cartDiv.innerHTML = "Empty Cart";
-        totalSpan.innerText = "0.00";
-        return;
-    }
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
 
-    // This creates a list with +/- buttons for each item
-    cartDiv.innerHTML = cart.map((item, index) => `
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; background: white; padding: 5px; border-radius: 5px;">
-            <span>${item.name}</span>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <button onclick="removeFromCart(${index})" style="background: #dc3545; padding: 2px 8px;">-</button>
-                <button onclick="addToCart(${item.id})" style="background: #28a745; padding: 2px 8px;">+</button>
-            </div>
-        </div>
-    `).join('');
+        function updateCart() {
+            const cartDiv = document.getElementById('cart-items');
+            const totalSpan = document.getElementById('total');
+            if (cart.length === 0) {
+                cartDiv.innerHTML = "Empty Cart";
+                totalSpan.innerText = "0.00";
+                return;
+            }
 
-    const total = cart.reduce((sum, item) => sum + item.price, 0);
-    totalSpan.innerText = total.toFixed(2);
-}
-            cartDiv.innerHTML = cart.map(i => `<div>• ${i.name}</div>`).join('');
+            cartDiv.innerHTML = cart.map((item, index) => `
+                <div class="cart-row">
+                    <span>${item.name}</span>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn-qty" style="background:#dc3545;" onclick="removeFromCart(${index})">-</button>
+                        <button class="btn-qty" style="background:#28a745;" onclick="addToCart(${item.id})">+</button>
+                    </div>
+                </div>
+            `).join('');
+
             const total = cart.reduce((sum, item) => sum + item.price, 0);
             totalSpan.innerText = total.toFixed(2);
-        
+        }
 
         async function submitOrder() {
-            if (cart.length === 0) return alert("Add food first!");
-            const name = prompt("Your Name:");
-            const loc = prompt("Delivery Location:");
-            if (!name || !loc) return alert("Needed!");
+            if (cart.length === 0) return alert("Please select items!");
+            const name = prompt("Enter your Name:");
+            const loc = prompt("Delivery (Hostel/Block):");
+            if (!name || !loc) return alert("Required!");
 
-            // YOUR CODESPACE LINK
             const myUrl = 'https://congenial-space-umbrella-7795769xq9vrcvp4-3000.app.github.dev';
 
             try {
@@ -114,53 +106,22 @@
                     body: JSON.stringify({ customer: name, location: loc, items: cart, total: document.getElementById('total').innerText })
                 });
                 if (res.ok) showPaymentScreen(name, document.getElementById('total').innerText);
-            } catch (err) { alert("Server Down! Check Codespace."); }
+            } catch (err) { alert("Server Down! Run node server.js and set Port to Public."); }
         }
-async function cancelOrder(name) {
-    if (!confirm("Are you sure you want to cancel instantly?")) return;
 
-    const myUrl = 'https://congenial-space-umbrella-7795769xq9vrcvp4-3000.app.github.dev';
-
-    try {
-        const res = await fetch(`${myUrl}/cancel-order/${name}`, {
-            method: 'DELETE'
-        });
-
-        if (res.ok) {
-            alert("Order Cancelled Successfully.");
-            location.reload(); // Take them back to the menu
-        } else {
-            alert("Could not find order to cancel.");
+        function showPaymentScreen(name, total) {
+            document.getElementById('main-content').innerHTML = `
+                <div class="qr-screen">
+                    <h2 style="color:#28a745;">Order Received!</h2>
+                    <p>Total: <strong>RM ${total}</strong></p>
+                    <img src="qr-code.png" class="qr-img">
+                    <p>Scan to pay <strong>Afiq</strong> via TNG.</p>
+                    <button onclick="location.reload()" style="width:100%; padding:12px; background:#28a745; color:white; border:none; border-radius:8px; cursor:pointer;">Done (Return to Menu)</button>
+                    <button onclick="location.reload()" style="width:100%; margin-top:10px; padding:10px; background:#6c757d; color:white; border:none; border-radius:8px; cursor:pointer; font-size:0.8em;">Cancel Order</button>
+                </div>
+            `;
         }
-    } catch (err) {
-        alert("Error connecting to server to cancel.");
-    }
-}
 
-function showPaymentScreen(name, total) {
-    document.getElementById('main-content').innerHTML = `
-        <div class="qr-screen">
-            <h2 style="color: #dc3545;">Order Confirmed!</h2>
-            <p>Total: <strong>RM ${total}</strong></p>
-            
-            <img src="qr-code.png" class="qr-img" style="width:200px;">
-            
-            <p>Scan to pay Afiq via TNG.</p>
-            
-            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
-                <button onclick="location.reload()" style="background: #28a745; padding: 15px;">
-                    I Have Paid
-                </button>
-                
-                <button onclick="cancelOrder('${name}')" style="background: #6c757d; padding: 10px; font-size: 0.8em;">
-                    ❌ Instant Cancel Order
-                </button>
-            </div>
-        </div>
-    `;
-}
-
-        
         renderMenu();
     </script>
 </body>

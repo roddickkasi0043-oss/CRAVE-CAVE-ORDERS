@@ -11,12 +11,12 @@ app.use(express.static(__dirname));
 
 let orders = [];
 
-// Main route - shows your menu
+// Serve the index.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Receiving the order from the customer
+// Receive order
 app.post('/order', (req, res) => {
     const newOrder = {
         id: orders.length + 1,
@@ -29,25 +29,24 @@ app.post('/order', (req, res) => {
     res.status(201).send({ message: "Order Received", orderId: newOrder.id });
 });
 
-// Admin route - shows all orders in JSON format
-app.get('/admin/orders', (req, res) => {
-    res.json(orders);
-});
-// Route to cancel/delete an order
+// Cancel order route
 app.delete('/cancel-order/:name', (req, res) => {
     const customerName = req.params.name;
     const initialLength = orders.length;
-    
-    // Remove the order from the list
     orders = orders.filter(order => order.customer !== customerName);
-
+    
     if (orders.length < initialLength) {
-        console.log(`Order for ${customerName} was cancelled.`);
-        res.status(200).send({ message: "Order deleted" });
+        res.status(200).send({ message: "Deleted" });
     } else {
-        res.status(404).send({ message: "Order not found" });
+        res.status(404).send({ message: "Not found" });
     }
 });
+
+// View orders
+app.get('/admin/orders', (req, res) => {
+    res.json(orders);
+});
+
 app.listen(PORT, () => {
     console.log(`Crave Cave is LIVE on port ${PORT}`);
 });
