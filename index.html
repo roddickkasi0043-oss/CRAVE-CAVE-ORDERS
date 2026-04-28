@@ -95,19 +95,51 @@
                 if (res.ok) showPaymentScreen(name, document.getElementById('total').innerText);
             } catch (err) { alert("Server Down! Check Codespace."); }
         }
+async function cancelOrder(name) {
+    if (!confirm("Are you sure you want to cancel instantly?")) return;
 
-        function showPaymentScreen(name, total) {
-            document.getElementById('main-content').innerHTML = `
-                <div class="qr-screen">
-                    <h2>Order Confirmed!</h2>
-                    <p>Total: <strong>RM ${total}</strong></p>
-                    <img src="qr-code.png" class="qr-img">
-                    <p>Scan to pay Afiq via TNG. Then click below:</p>
-                    <button onclick="location.reload()" style="background:green;">Done (Back to Menu)</button>
-                </div>
-            `;
+    const myUrl = 'https://congenial-space-umbrella-7795769xq9vrcvp4-3000.app.github.dev';
+
+    try {
+        const res = await fetch(`${myUrl}/cancel-order/${name}`, {
+            method: 'DELETE'
+        });
+
+        if (res.ok) {
+            alert("Order Cancelled Successfully.");
+            location.reload(); // Take them back to the menu
+        } else {
+            alert("Could not find order to cancel.");
         }
+    } catch (err) {
+        alert("Error connecting to server to cancel.");
+    }
+}
 
+function showPaymentScreen(name, total) {
+    document.getElementById('main-content').innerHTML = `
+        <div class="qr-screen">
+            <h2 style="color: #dc3545;">Order Confirmed!</h2>
+            <p>Total: <strong>RM ${total}</strong></p>
+            
+            <img src="qr-code.png" class="qr-img" style="width:200px;">
+            
+            <p>Scan to pay Afiq via TNG.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+                <button onclick="location.reload()" style="background: #28a745; padding: 15px;">
+                    I Have Paid
+                </button>
+                
+                <button onclick="cancelOrder('${name}')" style="background: #6c757d; padding: 10px; font-size: 0.8em;">
+                    ❌ Instant Cancel Order
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+        
         renderMenu();
     </script>
 </body>
